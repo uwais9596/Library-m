@@ -1,0 +1,178 @@
+# Libray-m
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Library Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    table, th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Library Management System</h1>
+    <button class="btn" onclick="openModal()">Add Book</button>
+    <input type="text" id="searchInput" placeholder="Search books..." onkeyup="searchBooks()" />
+    <table id="bookTable">
+      <tr>
+        <th>Book Title</th>
+        <th>Author</th>
+        <th>Available</th>
+        <th>Action</th>
+      </tr>
+      <tr>
+        <td>The Catcher in the Rye</td>
+        <td>J.D. Salinger</td>
+        <td>Yes</td>
+        <td>
+          <button class="btn" onclick="borrowBook(this)">Borrow</button>
+        </td>
+      </tr>
+      <tr>
+        <td>To Kill a Mockingbird</td>
+        <td>Harper Lee</td>
+        <td>No</td>
+        <td>
+          <button class="btn" onclick="borrowBook(this)" disabled>Borrow</button>
+        </td>
+      </tr>
+      <!-- Add more book rows here -->
+    </table>
+  </div>
+
+  <!-- Modal -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Add Book</h2>
+      <form id="addBookForm">
+        <label for="title">Title:</label>
+        <input type="text" id="title" required /><br />
+        <label for="author">Author:</label>
+        <input type="text" id="author" required /><br />
+        <label for="availability">Availability:</label>
+        <select id="availability">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select><br />
+        <button class="btn" type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Open modal to add a new book
+    function openModal() {
+      document.getElementById("myModal").style.display = "block";
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById("myModal").style.display = "none";
+    }
+
+    // Add a new book to the table
+    function addBook() {
+      var title = document.getElementById("title").value;
+      var author = document.getElementById("author").value;
+      var availability = document.getElementById("availability").value;
+
+      var table = document.getElementById("bookTable");
+      var newRow = table.insertRow(table.rows.length);
+      newRow.innerHTML = `
+        <td>${title}</td>
+        <td>${author}</td>
+        <td>${availability}</td>
+        <td>
+          <button class="btn" onclick="borrowBook(this)">Borrow</button>
+        </td>
+      `;
+
+      closeModal();
+      document.getElementById("addBookForm").reset();
+    }
+
+    // Search books in the table
+    function searchBooks() {
+      var input = document.getElementById("searchInput").value.toUpperCase();
+      var table = document.getElementById("bookTable");
+      var rows = table.getElementsByTagName("tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName("td");
+        var match = false;
+
+        for (var j = 0; j < cells.length; j++) {
+          var cell = cells[j];
+
+          if (cell) {
+            if (cell.innerHTML.toUpperCase().indexOf(input) > -1) {
+              match = true;
+              break;
+            }
+          }
+        }
+
+        if (match) {
+          rows[i].style.display = "";
+        } else {
+          rows[i].style.display = "none";
+        }
+      }
+    }
+
+    // Borrow a book
+    function borrowBook(button) {
+      button.disabled = true;
+      button.innerHTML = "Borrowed";
+      button.classList.add("disabled");
+    }
+
+    // Prevent form submission and add a book
+    document.getElementById("addBookForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      addBook();
+    });
+  </script>
+</body>
+</html>
